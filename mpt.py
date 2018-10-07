@@ -45,7 +45,7 @@ class Stock(object):
 
     def get_mean_variance(self):
         N = len(self.returns_list)
-        variance = np.std(self.returns_list)
+        variance = np.var(self.returns_list)
         return (sum(self.returns_list) / N, variance)
     
     def get_net_return(self):
@@ -58,14 +58,18 @@ class Porfolio(object):
     def __init__(self, stock_list_obj):
         self.stock_list = stock_list_obj
         self.n_stocks = len(stock_list_obj)
+        self.mean_vector = np.array([stock.get_mean_variance()[0] for stock in self.stock_list])
+        self.return_matrix = np.array([ stock.returns_list for stock in self.stock_list ])
+        self.returns_covariance = np.cov(self.return_matrix)
+        # print self.returns_covariance
 
-
-    def set_portfolio_weights(self):
-        pass
+    def set_portfolio_weights(self, weight_list):
+        self.weight_list = weight_list
 
     def get_portfolio_return(self):
+        self.weight_vector = np.array([self.weight_list])
+        expected_return = np.matmul(self.mean_vector, self.weight_vector.T)
         
-        pass
 
 if __name__ == '__main__':
     root_dir = 'weekly'
@@ -82,5 +86,5 @@ if __name__ == '__main__':
         print '\tNet return: {}'.format(stock.get_net_return())
         # stock.show_closing_prices()
         # stock.show_distribution()
-        
+    portfolio = Porfolio(stocklist)
     

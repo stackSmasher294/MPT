@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
+from Tkinter import *
+
 class Stock(object):
 
     def __init__(self, name, csv_file):
@@ -92,6 +94,22 @@ class Porfolio(object):
         return mean, var
 
 
+class Portfolio_App_GUI(Porfolio):
+    def __init__(self, stock_obj_list, root):
+        Porfolio.__init__(self, stock_obj_list)
+        frame = Frame(master=root)
+        frame.pack()
+        self.slider_list = []
+        for i in range(self.n_stocks - 1):
+            self.slider_list.append(Scale(frame,from_=0.0, to=1.0, resolution=0.01, orient=HORIZONTAL, command = lambda value, id=i: self.update_weight(id, value)))
+            self.slider_list[i].pack()
+            self.slider_list[i].set(0.5)
+
+    def update_weight(self, id, value):
+        print('{}: {}'.format(id, value))
+        return
+
+
 if __name__ == '__main__':
     root_dir = 'daily'
     csv_list = os.listdir(root_dir)
@@ -108,8 +126,10 @@ if __name__ == '__main__':
         print '\tpoints: {}'.format(len(stock.returns_list))
         # stock.show_closing_prices()
         # stock.show_distribution()
-    portfolio = Porfolio(stocklist)
-
-    print portfolio.get_portfolio_performance([0.25, 0.25, 0.25, 0.25])
-    print portfolio.get_portfolio_performance([0.1, 0.2, 0.3, 0.4])
+    # print portfolio.get_portfolio_performance([0.25, 0.25, 0.25, 0.25])
+    # print portfolio.get_portfolio_performance([0.4, 0.2, 0.3, 0.1])
+    root = Tk()
+    portfolio = Portfolio_App_GUI(stocklist, root)
+    root.mainloop()
+    # root.destroy()
     
